@@ -1,0 +1,23 @@
+# Ignore by default
+**/*
+
+# Specifically indicate not ignored files
+!.gitignore
+!.dockerignore
+!.dockerignore
+!README.md
+!Makefile
+
+# Add templates and workflows
+!/.github
+!/.github/ISSUE_TEMPLATE
+!/.github/ISSUE_TEMPLATE/*
+!/.github/PULL_REQUEST_TEMPLATE
+!/.github/PULL_REQUEST_TEMPLATE/*
+
+!/docs
+!/lib
+!/tools
+
+!*.sh
+!*.md

@@ -1,0 +1,98 @@
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+# https://learnxinyminutes.com/docs/yaml/
+---
+name: Bug report
+description: File a bug report
+title: '[bug]: '
+labels: ["bug", "triage"]
+assignees:
+  - avisiedo
+  - little-engineer-2025
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: summary
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: A clear and concise description of what the bug is.
+      value: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-replay-it
+    attributes:
+      label: To Reproduce
+      description: Tell us how to replay the bug
+      value: |
+        1. I set up environment variables.
+           ```raw
+           ```
+        2. I include files: `source check.lib.sh`
+        3. I run function with arguments: `is_alpha "892"`
+      placeholder: Enumerate the sequence of actions to replay it
+    validations:
+      required: true
+  - type: textarea
+    id: expectations
+    attributes:
+      label: Expected Result
+      description: Tell us what did you expect
+      value: |
+        I was expecting the exit code ...
+        I was expecting stderr to be ...
+        I was expecting stdout to be ...
+        ...
+      placeholder: Write what result were expecting and why
+    validations:
+      required: true
+  - type: textarea
+    id: current-result
+    attributes:
+      label: Current Result
+      description: Tell us what is the current result
+      value: |
+        The current exit code is 4
+        The current stderr is "..."
+        The current stdout is "..."
+        ...
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Which system did you get the bug in?
+      description: We use this information to replay properly the bug
+      value: |
+        Fedora Linux 42
+        MacOS ...
+        FreeBSD ...
+  - type: input
+    id: bash-version
+    attributes:
+      label: Version for bash shell
+      description: We use this information to replay properly the bug
+      value: |
+        GNU bash, version 5.2.37(1)-release (aarch64-redhat-linux-gnu)
+        Copyright (C) 2022 Free Software Foundation, Inc.
+        License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+        This is free software; you are free to change and redistribute it.
+        There is NO WARRANTY, to the extent permitted by law.
+      placeholder: bash --version
+    validations:
+      required: true
+  - type: textarea
+    id: extra-info
+    attributes:
+      label: Additional context
+      description: We use this information to replay properly the bug
+      value: |
+        Any additional information not covered by the above.
+    validations:
+      required: false
+
