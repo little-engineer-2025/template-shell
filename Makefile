@@ -16,3 +16,8 @@ test:
 .PHONY: deps
 deps: tools/registry.sh dependencies.sh
 	./tools/registry.sh install
+
+.PHONY: release
+release:
+	./tools/release.sh
+
