@@ -8,16 +8,29 @@
 !README.md
 !Makefile
 
-# Add templates and workflows
-!/.github
-!/.github/ISSUE_TEMPLATE
-!/.github/ISSUE_TEMPLATE/*
-!/.github/PULL_REQUEST_TEMPLATE
-!/.github/PULL_REQUEST_TEMPLATE/*
+# Add .github resources
+!.github
+!.github/**
+!.github/**/*
 
-!/docs
-!/lib
-!/tools
+# Add docs
+!docs
+!docs/**
+!docs/**/*
+
+# Add lib
+!lib
+!lib/**
+!lib/**/*
+
+# Add tools
+!tools
+!tools/**
+!tools/**/*
+
+# Add tests
+!test
+!test/**
+!test/**/*
 
 !*.sh
-!*.md
