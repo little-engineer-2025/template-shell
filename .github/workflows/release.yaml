@@ -1,0 +1,21 @@
+# Workflow to automate the release generation
+# NOTE: This workflow is executed manually
+---
+name: Release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up tools
+      run: sudo apt-get install -y make
+
+    - name: Run auto-release script
+      run: make release
+
