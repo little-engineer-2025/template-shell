@@ -54,36 +54,17 @@ release_generate_changelog() {
         # From the first repo commit
         BEGIN_COMMIT="${LAST_TAG_COMMIT}"
         version="v1.0.0-$(git rev-parse --short HEAD)"
-        echo "Changes:"
+        printf "Changes:\n"
     fi
-    echo "BEGIN_COMMIT=${BEGIN_COMMIT}"
 
-    # Get the commit range
-            # --grep="^\!?(fix|feat|docs|style|refactor|perf|test|build|ci|chore):" \
-    COMMITS="$(
-        git log "${BEGIN_COMMIT}..HEAD" \
-            --grep="^!fix:" \
-            --grep="^fix:" \
-            --grep="^!feat:" \
-            --grep="^feat:" \
-            --grep="^!docs:" \
-            --grep="^docs:" \
-            --grep="^!style:" \
-            --grep="^style:" \
-            --grep="^!refactor:" \
-            --grep="^refactor:" \
-            --grep="^!perf:" \
-            --grep="^perf:" \
-            --grep="^!test:" \
-            --grep="^test:" \
-            --grep="^!build:" \
-            --grep="^build:" \
-            --grep="^!ci:" \
-            --grep="^ci:" \
-            --grep="^!chore:" \
-            --grep="^chore:" \
-            --format="- %s (%h)"
-    )"
+    # Get the commit range selecting by conventional commit types
+    cc_types=(fix feat docs style refactor perf test build ci chore)
+    opts=()
+    for item in ${cc_types[@]}; do
+        opts+=(--grep="^!${item}")
+        opts+=(--grep="^${item}")
+    done
+    COMMITS="$(git log "${BEGIN_COMMIT}..HEAD" "${opts[@]}" --format="- %s (%h)")"
 
     version_major="${version#v}"
     version_major="${version_major%%.*}"
@@ -92,8 +73,6 @@ release_generate_changelog() {
     version_patch="${version#v*.}"
     version_patch="${version_patch#*.}"
     version_patch="${version_patch%%-*}"
-
-    printf "debug: version_major='%s' version_minor='%s' version_patch='%s'\n" "${version_major}" "${version_minor}" "${version_patch}"
 
     # Check for broken changes
     if [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^!")" != "" ]; then
@@ -108,8 +87,8 @@ release_generate_changelog() {
     fi
 
     # Print the log output
-    echo "Changes on ${version}:"
-    echo "${COMMITS}"
+    printf "Changes on %s:\n" "${version}"
+    printf "%s\n" "${COMMITS}"
 }
 
 # @describe tag current commit
@@ -122,11 +101,11 @@ release_tag_commit() {
 release_main() {
     local version
     version="$(./tools/next-version.sh)"
-    #local output="TAG_MESSAGE"
-    local output="/dev/stdout"
+    local output="TAG_MESSAGE"
     release_version_check "${version}"
     release_generate_changelog "${version}" >"${output}"
-    echo release_tag_commit "${version}"
+    cat TAG_MESSAGE
+    git tag "${version}" --file TAG_MESSAGE
 }
 
 if [ "${BASH_SOURCE[0]}" == "$0" ]; then
