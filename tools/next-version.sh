@@ -19,6 +19,24 @@
 #   - "-dirty" is added when we have a repository state that has new files or
 #     pending changes in stage to commit.
 version_generate() {
+    # Get the first commit hash
+    local FIRST_COMMIT
+    FIRST_COMMIT="$(git rev-list --max-parents=0 HEAD)"
+
+    # Get the last tagged commit
+    local LAST_TAG_COMMIT
+    LAST_TAG_COMMIT="$(git describe --tags HEAD^ 2>/dev/null)"
+
+    local BEGIN_COMMIT
+    if [ "${LAST_TAG_COMMIT}" == "" ]; then
+        # Last tag commit
+        BEGIN_COMMIT="${FIRST_COMMIT}"
+    else
+        # From the first repo commit
+        BEGIN_COMMIT="${LAST_TAG_COMMIT}"
+        version="v1.0.0-$(git rev-parse --short HEAD)"
+    fi
+
     local version
     if [ -n "${VERSION}" ]; then
         version="${VERSION}"
@@ -26,10 +44,36 @@ version_generate() {
         version="$(git describe --tags --dirty 2>/dev/null)"
         if [ "${version:0:1}" != "v" ]; then
             version="v1.0.0"
+            printf "%s\n" "${version}"
+            exit 0
+        else
+            version="${version%%-*}"
         fi
     else
         version="unknown"
     fi
+
+    version_major="${version#v}"
+    version_major="${version_major%%.*}"
+    version_minor="${version#v*.}"
+    version_minor="${version_minor%%.*}"
+    version_patch="${version#v*.}"
+    version_patch="${version_patch#*.}"
+    version_patch="${version_patch%%-*}"
+
+    # Check for broken changes
+    if [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^!")" != "" ]; then
+        version_major=$((version_major + 1))
+        version_minor="0"
+        version_patch="0"
+    elif [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^feat:")" != "" ]; then
+        version_minor=$((version_minor + 1))
+        version_patch="0"
+    elif [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^fix:")" != "" ]; then
+        version_patch=$((version_patch + 1))
+    fi
+    version="v${version_major}.${version_minor}.${version_patch}"
+
     printf "%s\n" "${version}"
 }
 
@@ -41,3 +85,4 @@ if [ "${BASH_SOURCE[0]}" == "$0" ]; then
     version_main "$@"
     exit $?
 fi
+
