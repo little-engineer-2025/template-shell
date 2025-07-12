@@ -26,6 +26,7 @@ version_generate() {
     # Get the last tagged commit
     local LAST_TAG_COMMIT
     LAST_TAG_COMMIT="$(git describe --tags HEAD^ 2>/dev/null)"
+    LAST_TAG_COMMIT="${LAST_TAG_COMMIT%%-*}"
 
     local BEGIN_COMMIT
     if [ "${LAST_TAG_COMMIT}" == "" ]; then
@@ -34,7 +35,6 @@ version_generate() {
     else
         # From the first repo commit
         BEGIN_COMMIT="${LAST_TAG_COMMIT}"
-        version="v1.0.0-$(git rev-parse --short HEAD)"
     fi
 
     local version

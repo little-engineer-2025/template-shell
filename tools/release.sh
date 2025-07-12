@@ -30,7 +30,9 @@ release_generate_changelog() {
 
     # Get the last tagged commit
     local LAST_TAG_COMMIT
-    LAST_TAG_COMMIT="tags/$(git describe --tags HEAD^ 2>/dev/null)"
+    LAST_TAG_COMMIT="tags/$(git describe --tags HEAD 2>/dev/null)"
+    LAST_TAG_COMMIT="${LAST_TAG_COMMIT%%-*}"
+
 
     local BEGIN_COMMIT
 
