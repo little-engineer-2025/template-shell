@@ -23,3 +23,8 @@ See: docs/CONTRIBUTING.md
 
 See: docs/SECURITY.md
 
+## References
+
+- man bash
+- [coreutils documentation](https://www.gnu.org/software/coreutils/manual/html_node/index.html#toc-Common-options-1).
+
