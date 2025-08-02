@@ -11,7 +11,7 @@ lint:
 
 .PHONY: test
 test:
-	bats test
+	bats -r tests
 
 .PHONY: deps
 deps: tools/registry.sh dependencies.sh

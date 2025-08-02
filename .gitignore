@@ -29,8 +29,8 @@
 !tools/**/*
 
 # Add tests
-!test
-!test/**
-!test/**/*
+!tests
+!tests/**
+!tests/**/*
 
 !*.sh
