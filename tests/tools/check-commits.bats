@@ -42,7 +42,7 @@ setup() {
     [ "$output" == "error: invalid commit: badtype: my failure message" ]
 }
 
-@test "git_find_remote_upstream" {
+@test "read_remote_upstream" {
     # mock git invocation
     git() {
         [ "$*" == "remote" ]
@@ -64,7 +64,7 @@ setup() {
     export -f grep
 
     # run test
-    run git_find_remote
+    run read_remote
     [ "$status" -eq 0 ]
     [ "$output" == "upstream" ]
 
@@ -72,7 +72,7 @@ setup() {
     unset git
 }
 
-@test "git_find_remote_failure" {
+@test "read_remote_failure" {
     # mock git invocation
     git() {
         [ "$*" == "remote" ]
@@ -93,7 +93,7 @@ setup() {
     export -f grep
 
     # run test
-    run git_find_remote
+    run read_remote
     [ "$status" -eq 1 ]
     [ "$output" == "" ]
 

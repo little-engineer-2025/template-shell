@@ -21,7 +21,7 @@ check_commit_message() {
     return 0
 }
 
-git_find_remote() {
+read_remote() {
     local priority=(upstream origin)
     for item in "${priority[@]}"; do
         if git remote | grep -q "${item}"; then
@@ -35,7 +35,7 @@ git_find_remote() {
 main() {
     local remote
     local ret=0
-    remote="$(git_find_remote)"
+    remote="$(read_remote)"
     [ "${remote}" != "" ] || {
         printf "error: could not find an expected remote\n"
         return 1
