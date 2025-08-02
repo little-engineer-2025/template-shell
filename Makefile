@@ -21,3 +21,7 @@ deps: tools/registry.sh dependencies.sh
 release:
 	./tools/release.sh
 
+.PHONY: check-commits
+check-commits:
+	./tools/check-commits.sh
+
