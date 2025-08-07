@@ -135,9 +135,9 @@ setup() {
         }
         [ "$*" != "${args}" ] && {
             printf "debug: args='%s'; output='%s'; ret='%s'\n" \
-              "${args}" \
-              "${output}" \
-              "${ret}"
+                "${args}" \
+                "${output}" \
+                "${ret}"
             ret=127
         }
         return $ret
@@ -164,9 +164,9 @@ setup() {
         }
         [ "$*" != "${args}" ] && {
             printf "debug: args='%s'; output='%s'; ret='%s'\n" \
-              "${args}" \
-              "${output}" \
-              "${ret}"
+                "${args}" \
+                "${output}" \
+                "${ret}"
             ret=127
         }
         return $ret
