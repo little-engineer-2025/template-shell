@@ -3,6 +3,7 @@
 ##
 # @file release.sh
 # @brief Script for tagging with a changelog the repository.
+# see: https://semver.org/
 ##
 
 # @describe Check if the version is ready for release
