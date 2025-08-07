@@ -4,6 +4,38 @@
 # @brief Generate the next version to tag the repository based on conventional
 #        commits.
 
+first_repo_commit() {
+    git rev-list --max-parents=0 HEAD
+}
+
+last_tag_commit() {
+    result="$(git describe --tags HEAD^ 2>/dev/null)"
+    result="${result%%-*}"
+    printf "%s" "${result}"
+}
+
+describe_version() {
+    git describe --tags --dirty 2>/dev/null
+}
+
+has_major_changes() {
+    local begin_commit="$1"
+    local end_commit="$2"
+    [ "$(git log "${begin_commit}..${end_commit}" --grep="^!" --format="%s")" != "" ]
+}
+
+has_minor_changes() {
+    local begin_commit="$1"
+    local end_commit="$2"
+    [ "$(git log "${begin_commit}..${end_commit}" --grep="^feat:" --format="%s")" != "" ]
+}
+
+has_patch_changes() {
+    local begin_commit="$1"
+    local end_commit="$2"
+    [ "$(git log "${begin_commit}..${end_commit}" --grep="^fix:" --format="%s")" != "" ]
+}
+
 # @description Generate the next version; bear in mind that VERSION environment
 # variable override the output for this function. The version printed out in the
 # standard output follow the format "vMAJOR.MINOR.PATCH[-CHANGES][-dirty]" for
@@ -21,12 +53,11 @@
 version_generate() {
     # Get the first commit hash
     local FIRST_COMMIT
-    FIRST_COMMIT="$(git rev-list --max-parents=0 HEAD)"
+    FIRST_COMMIT="$(first_repo_commit)"
 
     # Get the last tagged commit
     local LAST_TAG_COMMIT
-    LAST_TAG_COMMIT="$(git describe --tags HEAD^ 2>/dev/null)"
-    LAST_TAG_COMMIT="${LAST_TAG_COMMIT%%-*}"
+    LAST_TAG_COMMIT="$(last_tag_commit)"
 
     local BEGIN_COMMIT
     if [ "${LAST_TAG_COMMIT}" == "" ]; then
@@ -41,11 +72,12 @@ version_generate() {
     if [ -n "${VERSION}" ]; then
         version="${VERSION}"
     elif [ -e ".git" ]; then
-        version="$(git describe --tags --dirty 2>/dev/null)"
+        version="$(describe_version)"
+        # NOTE This check could vary depending on the versioning
         if [ "${version:0:1}" != "v" ]; then
-            version="v1.0.0"
+            version="v0.1.0"
             printf "%s\n" "${version}"
-            exit 0
+            return 0
         else
             version="${version%%-*}"
         fi
@@ -62,14 +94,16 @@ version_generate() {
     version_patch="${version_patch%%-*}"
 
     # Check for broken changes
-    if [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^!")" != "" ]; then
+    if has_major_changes "${BEGIN_COMMIT}" HEAD; then
         version_major=$((version_major + 1))
         version_minor="0"
         version_patch="0"
-    elif [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^feat:")" != "" ]; then
+    elif has_minor_changes "${BEGIN_COMMIT}" HEAD; then
         version_minor=$((version_minor + 1))
         version_patch="0"
-    elif [ "$(git log "${BEGIN_COMMIT}..HEAD" --grep="^fix:")" != "" ]; then
+    elif has_patch_changes "${BEGIN_COMMIT}" HEAD; then
+        version_patch=$((version_patch + 1))
+    else
         version_patch=$((version_patch + 1))
     fi
     version="v${version_major}.${version_minor}.${version_patch}"
@@ -77,11 +111,11 @@ version_generate() {
     printf "%s\n" "${version}"
 }
 
-version_main() {
+main() {
     version_generate
 }
 
-if [ "${BASH_SOURCE[0]}" == "$0" ]; then
-    version_main "$@"
+if [ "$(realpath "${BASH_SOURCE[0]}")"  == "$(realpath "$0")"  ]; then
+    main "$@"
     exit $?
 fi
