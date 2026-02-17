@@ -1,3 +1,7 @@
+> WARNING: Repository archived
+>
+> Further changes tracked at: https://github.com/avisiedo/template-shell
+
 # Shell scripts
 
 ## Getting started
